@@ -1,0 +1,324 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:1rem 0}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:8px}
+.nav button{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:6px 14px;font-size:13px;cursor:pointer;color:var(--color-text-primary)}
+.nav button:hover{background:var(--color-background-tertiary)}
+.nav button:disabled{opacity:0.35;cursor:not-allowed}
+.counter{font-size:13px;color:var(--color-text-secondary);white-space:nowrap}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer;transition:background 0.2s}
+.dot.active{background:#1D9E75}
+.slide{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.5rem;min-height:440px;display:none}
+.slide.show{display:block}
+.slide-num{font-size:11px;color:var(--color-text-tertiary);margin-bottom:6px;letter-spacing:0.05em}
+.slide h2{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.slide .sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1rem 0}
+.kv-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.9rem;text-align:center}
+.kv-card .val{font-size:22px;font-weight:500;margin-bottom:2px}
+.kv-card .lbl{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+.green{color:#0F6E56}.red{color:#A32D2D}.amber{color:#854F0B}.blue{color:#185FA5}.purple{color:#534AB7}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;margin:2px}
+.tag-g{background:#E1F5EE;color:#0F6E56}.tag-r{background:#FCEBEB;color:#A32D2D}.tag-b{background:#E6F1FB;color:#185FA5}.tag-a{background:#FAEEDA;color:#854F0B}.tag-p{background:#EEEDFE;color:#534AB7}
+.row{display:flex;gap:10px;margin:0.7rem 0;align-items:flex-start}
+.ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:500}
+.ico-g{background:#E1F5EE;color:#0F6E56}.ico-b{background:#E6F1FB;color:#185FA5}.ico-a{background:#FAEEDA;color:#854F0B}.ico-r{background:#FCEBEB;color:#A32D2D}.ico-p{background:#EEEDFE;color:#534AB7}
+.txt-blk .ttl{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.txt-blk .desc{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0.8rem 0}
+.box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.8rem}
+.box .ttl{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.box ul{list-style:none;padding:0}
+.box ul li{font-size:11px;color:var(--color-text-secondary);padding:2px 0;padding-left:10px;position:relative;line-height:1.5}
+.box ul li::before{content:"▸";position:absolute;left:0;font-size:9px;top:3px}
+.hl{background:var(--color-background-secondary);border-left:3px solid #1D9E75;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:0.6rem 0.8rem;margin:0.6rem 0;font-size:12px;color:var(--color-text-primary);line-height:1.6}
+.pt-row{display:flex;gap:8px;margin:0.4rem 0;align-items:baseline}
+.pt-row .pts{font-size:14px;font-weight:500;min-width:60px;text-align:right;color:#0F6E56}
+.pt-row .pn{font-size:12px;color:var(--color-text-secondary)}
+.timeline .tl-row{display:flex;gap:12px;margin:0.45rem 0;align-items:flex-start}
+.tl-date{font-size:11px;font-weight:500;min-width:60px;color:var(--color-text-secondary);padding-top:2px}
+.tl-dot2{width:10px;height:10px;border-radius:50%;background:#1D9E75;flex-shrink:0;margin-top:4px}
+.tl-body{font-size:12px;color:var(--color-text-primary);line-height:1.5}
+.chip{display:inline-block;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:4px;font-size:11px;padding:2px 8px;margin:2px;color:var(--color-text-secondary)}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0.8rem 0}
+.s-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.7rem;text-align:center}
+.s-card .s-num{font-size:16px;font-weight:500;margin-bottom:2px}
+.s-card .s-lbl{font-size:10px;color:var(--color-text-secondary);line-height:1.4}
+</style>
+
+<div class="wrap">
+<div class="nav">
+  <button id="prev" onclick="go(-1)">← 前へ</button>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+    <span class="counter" id="cnt">1 / 15</span>
+    <div class="dots" id="dots"></div>
+  </div>
+  <button id="next" onclick="go(1)">次へ →</button>
+</div>
+
+<div class="slide show" id="s0">
+  <div class="slide-num">SLIDE 01 / 15</div>
+  <h2>令和6年度 診療報酬改定の概要</h2>
+  <div class="sub">厚生労働省保険局医療課｜令和6年3月5日版｜医科全体版</div>
+  <div class="kv">
+    <div class="kv-card"><div class="val green">+0.88%</div><div class="lbl">診療報酬改定率<br>（R6年6月1日施行）</div></div>
+    <div class="kv-card"><div class="val red">▲0.97%</div><div class="lbl">薬価改定率<br>（R6年4月1日施行）</div></div>
+    <div class="kv-card"><div class="val">380p</div><div class="lbl">資料ページ数<br>（医科全体版）</div></div>
+  </div>
+  <div class="hl">2024年は6年ぶりの診療報酬・介護報酬・障害福祉サービス等報酬の同時改定。医師の働き方改革施行（R6.4〜）とも重なる重要な改定。</div>
+  <div style="margin-top:1rem">
+    <span class="tag tag-g">賃上げ</span>
+    <span class="tag tag-b">医療DX</span>
+    <span class="tag tag-a">地域包括ケア</span>
+    <span class="tag tag-r">感染症対策</span>
+    <span class="tag tag-p">医療機能分化</span>
+  </div>
+  <div style="margin-top:1rem;font-size:12px;color:var(--color-text-secondary);line-height:1.7">本資料は現時点での改定概要であり、算定要件・施設基準等の詳細は告示・通知等を必ずご確認ください。</div>
+</div>
+
+<div class="slide" id="s1">
+  <div class="slide-num">SLIDE 02 / 15</div>
+  <h2>大臣折衝事項（改定率の内訳）</h2>
+  <div class="sub">令和5年12月20日決定｜診療報酬+0.88%の内訳</div>
+  <div class="row"><div class="ico ico-g">①</div><div class="txt-blk"><div class="ttl"><span class="green">+0.61%</span>　看護職員・病院薬剤師等の賃上げ</div><div class="desc">R6年度ベア+2.5%、R7年度+2.0%を実施するための特例的な対応</div></div></div>
+  <div class="row"><div class="ico ico-b">②</div><div class="txt-blk"><div class="ttl"><span class="blue">+0.06%</span>　入院時の食費基準額の引き上げ</div><div class="desc">1食あたり30円引き上げ（患者負担は原則30円増、低所得者は10〜20円）</div></div></div>
+  <div class="row"><div class="ico ico-r">③</div><div class="txt-blk"><div class="ttl"><span class="red">▲0.25%</span>　生活習慣病管理料等の効率化・適正化</div><div class="desc">管理料・処方箋料等の再編による効率化</div></div></div>
+  <div class="row"><div class="ico ico-a">④</div><div class="txt-blk"><div class="ttl"><span class="amber">+0.46%</span>　①〜③以外の改定分</div><div class="desc">40歳未満の勤務医師・薬剤師・事務職員等の賃上げ（+0.28%程度）を含む</div></div></div>
+  <div class="hl">各科改定率：医科 +0.52%　歯科 +0.57%　調剤 +0.16%</div>
+  <div style="margin-top:0.8rem;font-size:12px;color:var(--color-text-secondary)">薬価：▲0.97%（R6.4.1施行）　材料価格：▲0.02%（R6.6.1施行）</div>
+</div>
+
+<div class="slide" id="s2">
+  <div class="slide-num">SLIDE 03 / 15</div>
+  <h2>改定の基本方針（4つの視点）</h2>
+  <div class="sub">改定に当たっての基本認識と4つの具体的方向性</div>
+  <div class="grid2">
+    <div class="box" style="border-left:3px solid #1D9E75"><div class="ttl">① 人材確保・働き方改革【重点課題】</div><ul><li>医療従事者の賃上げ・ベースアップ</li><li>タスクシフト・チーム医療推進</li><li>ICT活用による業務効率化</li><li>医師の労働時間短縮の実効性確保</li></ul></div>
+    <div class="box" style="border-left:3px solid #378ADD"><div class="ttl">② 地域包括ケア深化・医療DX</div><ul><li>医療DX推進・遠隔医療</li><li>リハ・栄養・口腔連携の推進</li><li>入院医療の機能分化・強化</li><li>かかりつけ医・在宅医療の評価</li></ul></div>
+    <div class="box" style="border-left:3px solid #BA7517"><div class="ttl">③ 安心・安全で質の高い医療</div><ul><li>物価高騰への対応</li><li>小児・周産期・救急医療の重点評価</li><li>生活習慣病の重症化予防</li><li>薬局の地域かかりつけ機能評価</li></ul></div>
+    <div class="box" style="border-left:3px solid #993556"><div class="ttl">④ 医療保険制度の安定性確保</div><ul><li>後発医薬品・バイオ後続品の使用促進</li><li>長期収載品の保険給付見直し</li><li>費用対効果評価制度の活用</li><li>外来医療の機能分化・強化</li></ul></div>
+  </div>
+</div>
+
+<div class="slide" id="s3">
+  <div class="slide-num">SLIDE 04 / 15</div>
+  <h2>施行スケジュール</h2>
+  <div class="sub">令和6年度改定の主なスケジュール（従来と異なる2段階施行）</div>
+  <div class="timeline">
+    <div class="tl-row"><div class="tl-date">R5.12.20</div><div class="tl-dot2"></div><div class="tl-body">大臣折衝（改定率決定）</div></div>
+    <div class="tl-row"><div class="tl-date">R6.1.12</div><div class="tl-dot2"></div><div class="tl-body">中医協諮問</div></div>
+    <div class="tl-row"><div class="tl-date">R6.2.14</div><div class="tl-dot2"></div><div class="tl-body">中医協答申</div></div>
+    <div class="tl-row"><div class="tl-date">R6.3月</div><div class="tl-dot2"></div><div class="tl-body">関係告示等・電子点数表公布（3月下旬）</div></div>
+    <div class="tl-row"><div class="tl-date" style="color:#A32D2D;font-weight:500">R6.4.1</div><div class="tl-dot2" style="background:#A32D2D"></div><div class="tl-body">薬価改定施行（▲0.97%）</div></div>
+    <div class="tl-row"><div class="tl-date">R6.5月</div><div class="tl-dot2"></div><div class="tl-body">届出期間（5月2日〜6月3日）</div></div>
+    <div class="tl-row"><div class="tl-date" style="color:#0F6E56;font-weight:500">R6.6.1</div><div class="tl-dot2" style="background:#0F6E56"></div><div class="tl-body">診療報酬改定施行（+0.88%）・材料価格改定</div></div>
+    <div class="tl-row"><div class="tl-date">R6.7月</div><div class="tl-dot2"></div><div class="tl-body">初回請求・定例報告</div></div>
+    <div class="tl-row"><div class="tl-date" style="color:#185FA5;font-weight:500">R6.10.1</div><div class="tl-dot2" style="background:#185FA5"></div><div class="tl-body">長期収載品の保険給付見直し施行（選定療養導入）・マイナ保険証利用率施設要件適用</div></div>
+  </div>
+  <div class="hl">従来は4月1日施行だったが、R6年度は6月1日施行と異なるスケジュール。届出期間も5月2日〜6月3日に変更。</div>
+</div>
+
+<div class="slide" id="s4">
+  <div class="slide-num">SLIDE 05 / 15</div>
+  <h2>① 賃上げ・ベースアップ評価料</h2>
+  <div class="sub">看護職員・病院薬剤師等を対象に2.3%目途の賃上げを実現する新区分</div>
+  <div class="hl">対象：看護職員・病院薬剤師その他の医療関係職種（40歳未満勤務医師・薬局薬剤師・事務職員等を除く）</div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">外来・在宅ベースアップ評価料（Ⅰ）</div><div class="desc">初診時 6点 ／ 再診時等 2点　※届出必要</div></div></div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">入院ベースアップ評価料 1〜165点</div><div class="desc">入院医療機関向け。1日につき算定。</div></div></div>
+  <div class="grid2" style="margin-top:0.8rem">
+    <div class="box"><div class="ttl">40歳未満勤務医師等の賃上げ</div><ul><li>入院料通則の改定に伴う入院基本料等引き上げ</li><li>初再診料の引き上げにより対応</li></ul></div>
+    <div class="box"><div class="ttl">賃上げ促進税制（最大控除率45%）</div><ul><li>中小規模：全雇用者+1.5%〜で15〜30%控除</li><li>上乗せ要件達成で最大45%控除</li><li>青色申告書提出が条件</li></ul></div>
+  </div>
+  <div style="margin-top:0.8rem">
+    <div class="pt-row"><div class="pts">291点</div><div class="pn">初診料</div></div>
+    <div class="pt-row"><div class="pts">75点</div><div class="pn">再診料</div></div>
+    <div class="pt-row"><div class="pts">1,688点</div><div class="pn">急性期一般入院料１（一般病棟入院基本料）</div></div>
+    <div class="pt-row"><div class="pts">1,822点</div><div class="pn">7対1入院基本料（特定機能病院・一般病棟）</div></div>
+  </div>
+</div>
+
+<div class="slide" id="s5">
+  <div class="slide-num">SLIDE 06 / 15</div>
+  <h2>② 医療DXの推進</h2>
+  <div class="sub">マイナ保険証・電子処方箋・電子カルテ情報共有サービスの整備を評価</div>
+  <div class="row"><div class="ico ico-b">新</div><div class="txt-blk"><div class="ttl">医療情報取得加算（初診時・再診時）</div><div class="desc">初診時：加算1（3点）/ 加算2（マイナ利用：1点）<br>再診時：加算3（2点）/ 加算4（マイナ利用：1点）※3月に1回</div></div></div>
+  <div class="row"><div class="ico ico-b">新</div><div class="txt-blk"><div class="ttl">医療DX推進体制整備加算（初診時）　8点</div><div class="desc">マイナ保険証の診察室等での活用＋電子処方箋＋電子カルテ情報共有サービス整備が要件<br>※R6年10月からマイナ保険証利用率が施設要件に適用</div></div></div>
+  <div class="row"><div class="ico ico-b">新</div><div class="txt-blk"><div class="ttl">在宅医療DX情報活用加算（月1回）　10点</div><div class="desc">マイナ保険証による情報を用いた訪問診療計画の立案を評価</div></div></div>
+  <div class="hl">R6年10月以降：マイナ保険証の利用率が施設要件として適用開始。未対応施設は加算が算定不可に。</div>
+  <div style="margin-top:0.8rem;font-size:12px;color:var(--color-text-secondary);line-height:1.6">医療DX推進体制整備加算の3要件：① マイナ保険証を診察室等で活用できる体制　② 電子処方箋の整備　③ 電子カルテ情報共有サービスの整備</div>
+</div>
+
+<div class="slide" id="s6">
+  <div class="slide-num">SLIDE 07 / 15</div>
+  <h2>③ ポストコロナの感染症対策</h2>
+  <div class="sub">改正感染症法・第8次医療計画に基づく体制整備と評価の見直し</div>
+  <div class="row"><div class="ico ico-r">新</div><div class="txt-blk"><div class="ttl">特定感染症入院医療管理加算</div><div class="desc">治療室の場合：200点　／　それ以外：100点</div></div></div>
+  <div class="row"><div class="ico ico-r">新</div><div class="txt-blk"><div class="ttl">特定感染症患者療養環境特別加算</div><div class="desc">個室加算：300点　／　陰圧室加算：200点</div></div></div>
+  <div class="row"><div class="ico ico-r">新</div><div class="txt-blk"><div class="ttl">発熱患者等対応加算　20点</div><div class="desc">発熱外来に代わる新設。外来での発熱患者等への対応を評価。</div></div></div>
+  <div class="row"><div class="ico ico-a">新</div><div class="txt-blk"><div class="ttl">抗菌薬適正使用体制加算　5点</div><div class="desc">抗菌薬の適正使用の取組みを評価</div></div></div>
+  <div class="hl">協定指定医療機関であることを感染対策向上加算・外来感染対策向上加算の要件に規定。外来感染対策向上加算の施設基準にLong COVIDへの対応を明記。</div>
+  <div style="margin-top:0.5rem"><span class="chip">急性期リハビリテーション加算（新）50点（14日目まで）</span></div>
+</div>
+
+<div class="slide" id="s7">
+  <div class="slide-num">SLIDE 08 / 15</div>
+  <h2>④ 外来医療の機能分化・強化</h2>
+  <div class="sub">生活習慣病管理の再編・かかりつけ医機能の強化・後発品使用促進</div>
+  <div class="hl">特定疾患療養管理料の対象疾患から生活習慣病（高血圧・糖尿病・脂質異常症等）を除外し、新たな管理料を創設。</div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">生活習慣病管理料（Ⅱ）　333点（月1回）</div><div class="desc">療養計画書への同意＋診療ガイドラインを参考にした出来高算定による管理料</div></div></div>
+  <div class="grid2" style="margin-top:0.8rem">
+    <div class="box"><div class="ttl">かかりつけ医機能の強化</div><ul><li>地域包括診療加算１/2：28点/21点</li><li>認知症地域包括診療加算１/2：38点/31点</li><li>ケアマネ連携・サービス担当者会議参加を要件化</li></ul></div>
+    <div class="box"><div class="ttl">後発品使用促進</div><ul><li>リフィル処方箋・長期処方の促進</li><li>一般名処方加算１/2：10点/8点</li><li>後発医薬品使用体制加算：77〜87点</li><li>外来腫瘍化学療法の充実</li></ul></div>
+  </div>
+  <div style="margin-top:0.8rem">
+    <span class="chip">特定疾患処方管理加算 56点</span>
+    <span class="chip">処方箋料 60点</span>
+    <span class="chip">薬剤情報提供料 4点</span>
+  </div>
+</div>
+
+<div class="slide" id="s8">
+  <div class="slide-num">SLIDE 09 / 15</div>
+  <h2>⑤ 入院医療の評価（急性期・地域包括）</h2>
+  <div class="sub">地域包括医療病棟の新設・急性期機能分化の促進・働き方改革</div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">地域包括医療病棟入院料　3,050点</div><div class="desc">高齢者の中等症急性疾患向けの新病棟。在宅復帰率8割・救急搬送割合15%・ADL維持率95%以上等が要件。</div></div></div>
+  <div class="row"><div class="ico ico-b">改</div><div class="txt-blk"><div class="ttl">急性期一般入院料１の平均在院日数短縮</div><div class="desc">18日 → 16日に短縮。重症度・医療看護必要度の見直し（急1でのB項目廃止等）。</div></div></div>
+  <div class="row"><div class="ico ico-b">新</div><div class="txt-blk"><div class="ttl">特定集中治療室管理料5・6（遠隔ICU）　8,890点</div><div class="desc">SOFAスコアを用いた患者指標の導入。宿日直医師配置の評価。遠隔ICU加算の新設。</div></div></div>
+  <div class="grid2" style="margin-top:0.6rem">
+    <div class="box"><div class="ttl">急性期充実体制加算（再編）</div><ul><li>加算1/2：440点/360点（7日以内）</li><li>小児・周産期・精神科充実体制加算（新）</li><li>心臓血管外科実績要件の追加</li></ul></div>
+    <div class="box"><div class="ttl">地域包括ケア病棟の見直し</div><ul><li>40日以内：2,838点 / 41日以降：2,690点</li><li>在宅医療要件・在宅復帰率の見直し</li><li>短期滞在手術の扱い見直し</li></ul></div>
+  </div>
+</div>
+
+<div class="slide" id="s9">
+  <div class="slide-num">SLIDE 10 / 15</div>
+  <h2>⑥ 医療・介護の連携強化（同時改定対応）</h2>
+  <div class="sub">コロナ禍の経験を踏まえた医療機関と介護保険施設等との平時からの連携体制整備</div>
+  <div class="hl">地域包括ケア病棟・在宅療養支援診療所/病院を持つ医療機関が「協力医療機関」となることを望ましい要件として規定。</div>
+  <div class="row"><div class="ico ico-a">新</div><div class="txt-blk"><div class="ttl">協力対象施設入所者入院加算（入院初日）</div><div class="desc">往診が行われた場合：600点　／　それ以外：200点</div></div></div>
+  <div class="row"><div class="ico ico-a">新</div><div class="txt-blk"><div class="ttl">介護保険施設等連携往診加算　200点</div><div class="desc">平時から連携する介護保険施設等への往診を評価</div></div></div>
+  <div class="row"><div class="ico ico-p">新</div><div class="txt-blk"><div class="ttl">医療的ケア児（者）入院前支援加算　1,000点</div><div class="desc">医療的ケアが必要な小児・成人の入院前の支援を評価</div></div></div>
+  <div class="grid2" style="margin-top:0.6rem">
+    <div class="box"><div class="ttl">有床診療所の連携強化</div><ul><li>介護障害連携加算１：192点（新）</li><li>介護障害連携加算２：38点（新）</li><li>末期悪性腫瘍患者への訪問診療料を医療保険給付に</li></ul></div>
+    <div class="box"><div class="ttl">かかりつけ医とケアマネの連携</div><ul><li>地域包括診療料加算の見直し</li><li>ケアマネタイム設置の要件化</li><li>認知症研修の要件化（望ましい）</li></ul></div>
+  </div>
+</div>
+
+<div class="slide" id="s10">
+  <div class="slide-num">SLIDE 11 / 15</div>
+  <h2>⑦ 質の高い在宅医療・訪問看護の確保</h2>
+  <div class="sub">ICT連携・24時間体制・看取り推進・訪問看護の機能強化</div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">在宅医療情報連携加算　100点</div><div class="desc">ICTを用いた医療・介護関係職種等との情報連携を評価</div></div></div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">往診時医療情報連携加算　200点</div><div class="desc">往診時のICT活用による情報連携を評価</div></div></div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">在宅がん患者緊急時医療情報連携指導料　200点</div><div class="desc">在宅がん患者の緊急時の情報連携・指導を評価</div></div></div>
+  <div class="grid2" style="margin-top:0.6rem">
+    <div class="box"><div class="ttl">訪問看護管理療養費の見直し</div><ul><li>訪問看護管理療養費1（新）：3,000円</li><li>訪問看護管理療養費2（新）：2,500円</li><li>24時間対応体制加算（新）：6,800円/6,520円</li><li>専門性の高い看護師の配置・実績を評価</li></ul></div>
+    <div class="box"><div class="ttl">往診料等の見直し</div><ul><li>緊急往診加算（その他）：325点（新）</li><li>夜間・休日往診加算：405点（新）</li><li>深夜往診加算：485点（新）</li><li>在宅時医学総合管理料等の評価見直し</li></ul></div>
+  </div>
+</div>
+
+<div class="slide" id="s11">
+  <div class="slide-num">SLIDE 12 / 15</div>
+  <h2>⑧ 重点分野への対応（救急・小児・精神科）</h2>
+  <div class="sub">働き方改革対応を含む救急・小児・周産期・精神科領域の重点評価</div>
+  <div class="row"><div class="ico ico-r">新</div><div class="txt-blk"><div class="ttl">救急患者連携搬送料　600〜1,800点</div><div class="desc">いわゆる「下り搬送」（回復期・療養病棟への転送）を促進する評価。働き方改革の観点からも重要。</div></div></div>
+  <div class="row"><div class="ico ico-b">新</div><div class="txt-blk"><div class="ttl">新生児特定集中治療室重症児対応体制強化管理料　14,539点</div><div class="desc">NICUにおける重症児への手厚い看護配置（2対1）等を評価</div></div></div>
+  <div class="row"><div class="ico ico-p">新</div><div class="txt-blk"><div class="ttl">精神科地域包括ケア病棟入院料　1,535点</div><div class="desc">精神科における地域包括ケアを推進する新病棟</div></div></div>
+  <div class="row"><div class="ico ico-p">新</div><div class="txt-blk"><div class="ttl">精神科入退院支援加算（退院時1回）　1,000点</div><div class="desc">精神病床入院患者の地域移行・退院支援を評価</div></div></div>
+  <div style="margin-top:0.8rem">
+    <span class="chip">小児特定疾患カウンセリング料（初回）800点（新）</span>
+    <span class="chip">小児入院 看護補助加算151点（新）</span>
+    <span class="chip">発達障害・不適切養育への対応強化</span>
+  </div>
+</div>
+
+<div class="slide" id="s12">
+  <div class="slide-num">SLIDE 13 / 15</div>
+  <h2>⑨ リハビリ・栄養・口腔連携の推進</h2>
+  <div class="sub">急性期から回復期・生活期にかけた包括的な連携体制の評価</div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">リハビリテーション・栄養・口腔連携体制加算　120点（1日につき）</div><div class="desc">急性期入院医療において、リハ・栄養・口腔管理を包括的に提供する体制を評価</div></div></div>
+  <div class="row"><div class="ico ico-g">新</div><div class="txt-blk"><div class="ttl">急性期リハビリテーション加算　50点（14日目まで）</div><div class="desc">急性期からの早期リハビリ開始・強化を評価</div></div></div>
+  <div class="row"><div class="ico ico-a">新</div><div class="txt-blk"><div class="ttl">栄養情報連携料　70点</div><div class="desc">医療と介護における栄養情報の連携を推進</div></div></div>
+  <div class="grid2" style="margin-top:0.6rem">
+    <div class="box"><div class="ttl">回復期リハビリ病棟の見直し</div><ul><li>回復期リハビリテーション入院料1：2,229点</li><li>回復期リハビリ入院医療管理料（新）：1,859点</li><li>FIM測定等の要件見直し・運動器リハ算定上限数見直し</li></ul></div>
+    <div class="box"><div class="ttl">バイオ後続品の使用促進</div><ul><li>バイオ後続品使用体制加算（新）：100点</li><li>在宅血液透析遠隔モニタリング加算（新）：115点</li><li>入院・外来でのバイオ後続品使用評価見直し</li></ul></div>
+  </div>
+</div>
+
+<div class="slide" id="s13">
+  <div class="slide-num">SLIDE 14 / 15</div>
+  <h2>⑩ 療養病棟・長期収載品の見直し</h2>
+  <div class="sub">療養病棟の医療区分見直し・長期収載品の選定療養導入（R6.10.1〜）</div>
+  <div class="hl" style="border-color:#A32D2D">長期収載品の保険給付見直し（R6.10.1施行）：後発品の上市後5年以上又は置換率50%以上のものについて、後発品最高価格帯との差額の3/4までを保険給付の対象に。患者が先発品を希望する場合は選定療養として差額を自己負担。</div>
+  <div class="grid2" style="margin-top:0.8rem">
+    <div class="box"><div class="ttl">療養病棟入院料の見直し</div><ul><li>医療区分の見直し（内容精査）</li><li>中心静脈栄養の評価見直し</li><li>リハビリテーションの評価見直し</li><li>経過措置病棟の廃止</li></ul></div>
+    <div class="box"><div class="ttl">後発品・バイオ後続品の促進</div><ul><li>後発医薬品使用体制加算1/2/3：87/82/77点</li><li>外来後発医薬品使用体制加算1/2/3：8/7/5点</li><li>一般名処方加算1/2：10点/8点</li><li>医師・薬剤師の協働による適正使用推進</li></ul></div>
+  </div>
+  <div class="row" style="margin-top:0.8rem"><div class="ico ico-p">改</div><div class="txt-blk"><div class="ttl">看護補助体制充実加算の見直し</div><div class="desc">介護福祉士・経験豊富な看護補助者を評価。小児入院医療管理料での看護補助加算を新設（151点）。</div></div></div>
+  <div style="margin-top:0.8rem">
+    <span class="chip">DPC/PDPSで大学病院の医師派遣機能・臓器提供・医療の質向上を評価</span>
+  </div>
+</div>
+
+<div class="slide" id="s14">
+  <div class="slide-num">SLIDE 15 / 15</div>
+  <h2>まとめ・医療機関が押さえるべきポイント</h2>
+  <div class="sub">令和6年度診療報酬改定の全体像と重要チェックリスト</div>
+  <div class="summary-grid">
+    <div class="s-card"><div class="s-num green">+0.88%</div><div class="s-lbl">診療報酬改定率<br>（6月1日施行）</div></div>
+    <div class="s-card"><div class="s-num red">▲0.97%</div><div class="s-lbl">薬価改定率<br>（4月1日施行）</div></div>
+    <div class="s-card"><div class="s-num blue">6年ぶり</div><div class="s-lbl">3報酬同時改定<br>（医療・介護・障害）</div></div>
+  </div>
+  <div class="grid2" style="margin-top:0.5rem">
+    <div class="box" style="border-left:3px solid #1D9E75"><div class="ttl">医療機関が特に注目すべき項目</div><ul><li>ベースアップ評価料の届出（6月までに届出要）</li><li>医療DX推進体制整備加算（電子処方箋・電カル整備）</li><li>地域包括医療病棟（新設・転換の検討）</li><li>マイナ保険証利用率（10月から施設要件に）</li><li>生活習慣病管理料の算定区分変更</li><li>長期収載品の選定療養対応（10月〜）</li></ul></div>
+    <div class="box" style="border-left:3px solid #185FA5"><div class="ttl">改定の5大テーマ</div><ul><li>賃上げ・人材確保（重点課題）</li><li>医療DX・マイナ保険証活用</li><li>地域包括ケアシステムの深化</li><li>安心・安全で質の高い医療</li><li>制度の安定性・持続可能性確保</li></ul></div>
+  </div>
+  <div class="hl">施行日：薬価 R6.4.1 ／ 診療報酬 R6.6.1 ／ 長期収載品見直し・マイナ利用率要件 R6.10.1　※詳細は必ず告示・通知をご確認ください。</div>
+</div>
+</div>
+
+<script>
+var cur = 0;
+var total = 15;
+
+var dotsEl = document.getElementById('dots');
+for (var i = 0; i < total; i++) {
+  var d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  (function(j) {
+    d.onclick = function() { show(j); };
+  })(i);
+  dotsEl.appendChild(d);
+}
+
+function show(n) {
+  var slides = document.querySelectorAll('.slide');
+  var dots = document.querySelectorAll('.dot');
+  for (var i = 0; i < slides.length; i++) {
+    slides[i].classList.toggle('show', i === n);
+  }
+  for (var i = 0; i < dots.length; i++) {
+    dots[i].classList.toggle('active', i === n);
+  }
+  document.getElementById('cnt').textContent = (n + 1) + ' / ' + total;
+  document.getElementById('prev').disabled = (n === 0);
+  document.getElementById('next').disabled = (n === total - 1);
+  cur = n;
+}
+
+function go(d) {
+  var next = cur + d;
+  if (next < 0) next = 0;
+  if (next >= total) next = total - 1;
+  show(next);
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') go(1);
+  if (e.key === 'ArrowLeft') go(-1);
+});
+
+show(0);
+</script>
